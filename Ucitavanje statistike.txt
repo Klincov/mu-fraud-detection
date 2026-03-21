@@ -1,0 +1,107 @@
+Mimi
+Ryzen 5 6600H
+16GB RAM 4800MT/S
+Disk:
+Read: ~2200 – 2500 MB/s
+Write: ~2100 MB/s
+
+df.info(memory_usage='deep') bez dtype optimizacije:
+
+<class 'pandas.DataFrame'>
+RangeIndex: 8580255 entries, 0 to 8580254
+Data columns (total 44 columns):
+ #   Column                      Dtype
+---  ------                      -----
+ 0   ssn                         str
+ 1   cc_num                      int64
+ 2   first                       str
+ 3   last                        str
+ 4   gender                      str
+ 5   street                      str
+ 6   city                        str
+ 7   state                       str
+ 8   zip                         int64
+ 9   lat                         float64
+ 10  long                        float64
+ 11  city_pop                    int64
+ 12  job                         str
+ 13  dob                         str
+ 14  acct_num                    int64
+ 15  profile                     str
+ 16  trans_num                   str
+ 17  trans_date                  str
+ 18  trans_time                  str
+ 19  unix_time                   int64
+ 20  category                    str
+ 21  amt                         float64
+ 22  is_fraud                    int64
+ 23  merchant                    str
+ 24  merch_lat                   float64
+ 25  merch_long                  float64
+ 26  customer_num_trans_1_day    int64
+ 27  customer_num_trans_7_day    int64
+ 28  customer_num_trans_30_day   int64
+ 29  trans_time_secs             int64
+ 30  trans_time_hrs              int64
+ 31  trans_time_is_night         int64
+ 32  trans_time_day              int64
+ 33  trans_date_is_weekend       int64
+ 34  customer_avg_amout_1_day    float64
+ 35  customer_avg_amount_7_day   float64
+ 36  customer_avg_amount_30_day  float64
+ 37  merchant_num_trans_1_day    float64
+ 38  merchant_num_trans_7_day    float64
+ 39  merchant_num_trans_30_day   float64
+ 40  merchant_risk_1_day         int64
+ 41  merchant_risk_7_day         int64
+ 42  merchant_risk_30_day        int64
+ 43  merchant_risk_90_day        int64
+dtypes: float64(11), int64(18), str(15)
+memory usage: 4.4 GB
+
+df.info(memory_usage='deep') sa dtype optimizacije:
+
+ #   Column                      Dtype
+---  ------                      -----
+ 0   gender                      category
+ 1   city                        category
+ 2   state                       category
+ 3   zip                         int32
+ 4   lat                         float32
+ 5   long                        float32
+ 6   city_pop                    int32
+ 7   job                         category
+ 8   profile                     category
+ 9   trans_date                  category
+ 10  trans_time                  category
+ 11  unix_time                   int64
+ 12  category                    category
+ 13  amt                         float32
+ 14  is_fraud                    int8
+ 15  merchant                    category
+ 16  merch_lat                   float32
+ 17  merch_long                  float32
+ 18  customer_num_trans_1_day    int16
+ 19  customer_num_trans_7_day    int16
+ 20  customer_num_trans_30_day   int16
+ 21  trans_time_secs             int32
+ 22  trans_time_hrs              int8
+ 23  trans_time_is_night         int8
+ 24  trans_time_day              int8
+ 25  trans_date_is_weekend       int8
+ 26  customer_avg_amout_1_day    float32
+ 27  customer_avg_amount_7_day   float32
+ 28  customer_avg_amount_30_day  float32
+ 29  merchant_num_trans_1_day    float32
+ 30  merchant_num_trans_7_day    float32
+ 31  merchant_num_trans_30_day   float32
+ 32  merchant_risk_1_day         int16
+ 33  merchant_risk_7_day         int16
+ 34  merchant_risk_30_day        int16
+ 35  merchant_risk_90_day        int16
+dtypes: category(9), float32(11), int16(7), int32(3), int64(1), int8(5)
+memory usage: 813.7 MB
+
+
+vreme csv ~53sek
+vreme parquet ~5sek
