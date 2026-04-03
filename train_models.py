@@ -39,8 +39,8 @@ feature_groups = {
 }
 
 #Ovo menjaj
-ACTIVE_GROUP = 'all'
-ACTIVE_MODEL  = 'lightgbm'  # 'catboost' ili 'lightgbm'
+ACTIVE_GROUP = 'baseline'
+ACTIVE_MODEL  = 'catboost'  # 'catboost' ili 'lightgbm'
 
 
 ALL_CAT_COLS = ['gender', 'state', 'job']  # category izbačena
@@ -132,7 +132,8 @@ def train_lightgbm(X_train, y_train, X_val, y_val, cat_indices):
         n_estimators=2000,
         num_leaves=63,          
         max_depth=6,
-        scale_pos_weight=neg / pos,  # ekvivalent class_weights
+        #scale_pos_weight=neg / pos,  # ekvivalent class_weights
+        is_unbalance=True,
         random_state=42,
         verbose=-1,
     )
