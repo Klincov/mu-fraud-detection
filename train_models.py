@@ -40,7 +40,7 @@ feature_groups = {
 }
 
 #Ovo menjaj
-ACTIVE_GROUP = 'all'
+ACTIVE_GROUP = 'all_bez_customer'
 ACTIVE_MODEL  = 'catboost'  # 'catboost' ili 'lightgbm'
 
 
@@ -104,7 +104,7 @@ def train_catboost(X_train, y_train, X_val, y_val, cat_indices):
         random_seed=42,
         verbose=200,
         class_weights=class_weights,
-        task_type="GPU",
+        task_type="CPU",
         thread_count=-1,
         devices="0",
         early_stopping_rounds=100,
