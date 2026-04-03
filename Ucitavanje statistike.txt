@@ -1,4 +1,3 @@
-Mimi
 Ryzen 5 6600H
 16GB RAM 4800MT/S
 Disk:

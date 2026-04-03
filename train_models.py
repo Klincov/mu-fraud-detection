@@ -32,6 +32,7 @@ feature_groups = {
     'all_bez_merchant_risk': baseline + demographics + geography +
                              temporal + customer_behavior + merchant_profile,
     'samo_merchant_risk':    baseline + merchant_risk,
+    'customer+merchant_risk': baseline + customer_behavior + merchant_risk,
     'all_bez_geo':           baseline + demographics +
                              temporal + customer_behavior + merchant_profile + merchant_risk,
     'all_bez_customer':      baseline + demographics + geography +
@@ -39,7 +40,7 @@ feature_groups = {
 }
 
 #Ovo menjaj
-ACTIVE_GROUP = 'baseline'
+ACTIVE_GROUP = 'all'
 ACTIVE_MODEL  = 'catboost'  # 'catboost' ili 'lightgbm'
 
 
@@ -96,7 +97,7 @@ def train_catboost(X_train, y_train, X_val, y_val, cat_indices):
 
     model = CatBoostClassifier(
         loss_function="Logloss",
-        eval_metric="AUC",
+        eval_metric="PRAUC",
         learning_rate=0.05,
         depth=6,
         iterations=2000,
@@ -104,6 +105,7 @@ def train_catboost(X_train, y_train, X_val, y_val, cat_indices):
         verbose=200,
         class_weights=class_weights,
         task_type="GPU",
+        thread_count=-1,
         devices="0",
         early_stopping_rounds=100,
     )
@@ -127,13 +129,14 @@ def train_lightgbm(X_train, y_train, X_val, y_val, cat_indices):
 
     model = LGBMClassifier(
         objective="binary",
-        metric="auc",
+        metric="average_precision",
         learning_rate=0.05,
         n_estimators=2000,
         num_leaves=63,          
         max_depth=6,
-        #scale_pos_weight=neg / pos,  # ekvivalent class_weights
+        #scale_pos_weight=neg / pos,  # ekvivalent class_weights, a moze i samo is_unbalance 
         is_unbalance=True,
+        n_jobs=-1,
         random_state=42,
         verbose=-1,
     )
@@ -191,17 +194,17 @@ def main():
     else:
         raise ValueError(f"Nepoznat model: {ACTIVE_MODEL}. Koristi 'catboost' ili 'lightgbm'.")
 
-    print("\n── Val threshold ──")
+    print("\nVal threshold")
     val_threshold = find_best_threshold(val_proba, y_val)
     val_metrics   = evaluate(val_proba, y_val, val_threshold)
     print_metrics("VALIDATION METRICS", val_metrics)
 
-    print("\n── Test threshold ──")
+    print("\nTest threshold")
     test_threshold = find_best_threshold(test_proba, y_test)
     test_metrics   = evaluate(test_proba, y_test, test_threshold)
     print_metrics("TEST METRICS", test_metrics)
 
-    joblib.dump(model, f"{ACTIVE_MODEL}_{ACTIVE_GROUP}.pkl")
+    joblib.dump(model, f"models/{ACTIVE_MODEL}_{ACTIVE_GROUP}.pkl")
     pd.DataFrame([val_metrics, test_metrics], index=["val", "test"]).to_json(
         f"metrics/{ACTIVE_MODEL}_{ACTIVE_GROUP}_metrics.json"
     )
