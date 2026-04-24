@@ -4,16 +4,16 @@ import numpy as np
 drop_always = [
     'ssn', 'cc_num', 'first', 'last', 'acct_num',
     'street', 'trans_num', 'dob', 'profile',
-    'trans_date', 'trans_time',  # već ima izvedene kolone
+    'trans_date', 'trans_time',  # vec ima izvedene kolone
     'trans_time_secs',           # redundantno sa trans_time_hrs
-    'unix_time',                 # koristio si ga samo za sortiranje
+    'unix_time',                 # samo za sortiranje
     'city',                      # previsoko kardinalitet
     'merchant',                  # previsoko kardinalitet, merchant_risk je bolji proxy
 ]
 
 # Haversine funkcija za udaljenost u km
 def haversine(lat1, lon1, lat2, lon2):
-    R = 6371  # poluprecnik Zemlje u km
+    R = 6371  # poluprecnik planete u km
     lat1, lon1, lat2, lon2 = map(np.radians, [lat1, lon1, lat2, lon2])
     dlat = lat2 - lat1
     dlon = lon2 - lon1

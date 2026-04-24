@@ -6,7 +6,12 @@ from sklearn.metrics import (
     average_precision_score,
     precision_recall_curve,
     precision_recall_fscore_support,
+    ConfusionMatrixDisplay,
+    confusion_matrix,
+    RocCurveDisplay,
+    PrecisionRecallDisplay
 )
+import matplotlib.pyplot as plt
 
 
 baseline = ['amt']
@@ -98,6 +103,18 @@ def eval_binary(y_true, proba, threshold=None):
     precision, recall, f1, _ = precision_recall_fscore_support(
         y_true, y_pred, pos_label=1, average="binary"
     )
+    #Confusion matrixx
+    cm = confusion_matrix(y_true, y_pred, normalize='true')  # 'true' normalizuje po pravim klasama
+    disp = ConfusionMatrixDisplay(cm, display_labels=['Validna', 'Prevara'])
+    disp.plot(values_format='.1%')  
+    plt.show()
+
+    #PR kriva i ROC kriva
+    PrecisionRecallDisplay.from_predictions(y_true,proba).plot()
+    plt.show()
+
+    RocCurveDisplay.from_predictions(y_true, proba).plot()
+    plt.show()
 
     return {
         "roc_auc": roc,
@@ -114,6 +131,11 @@ def evaluate_model(name, model, X_lgb, X_cb, y, cat_features):
         if "catboost" in name.lower():
             pool = Pool(X_cb, cat_features=cat_features)
             proba = model.predict_proba(pool)[:, 1]
+            # CatBoost
+            feat_imp = pd.Series(model.get_feature_importance(), 
+                                index=X_cb.columns).sort_values(ascending=False)
+            feat_imp.plot(kind='bar')
+            plt.show()
         else:
             proba = model.predict_proba(X_lgb)[:, 1]
 
@@ -125,12 +147,12 @@ def evaluate_model(name, model, X_lgb, X_cb, y, cat_features):
         return None
 
 
-ACTIVE_GROUP = 'all'
+ACTIVE_GROUP = 'all_bez_merchant_risk'
 
 def main():
     models = {
-        "catboost": "models/catboost_all.pkl",
-        "lightgbm": "models/lightgbm_all.pkl",
+        "catboost": "models/catboost_all_bez_merchant_risk.pkl",
+        "lightgbm": "models/catboost_all_bez_merchant_risk.pkl",
     }
 
     features, cat_cols = get_active_features()

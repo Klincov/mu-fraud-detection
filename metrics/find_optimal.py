@@ -24,4 +24,4 @@ df = pd.DataFrame(rows)
 # provaj i neku kombinaciju pr auc, recall, i f1 ako stigne
 df = df.sort_values(by="pr_auc_test", ascending=False)
 
-print(df.head())
+print(df)
